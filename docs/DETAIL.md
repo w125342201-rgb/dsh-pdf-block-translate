@@ -173,7 +173,7 @@ v0 支持两种运行 profile，由 `pdf_prepare` 的 `profile` 参数选择；`
 - **参考文献、作者/单位、页码默认保留**：`reference`、`authors`、`meta`、`page_number` 均为 `keep=true`；表格单元格（`table_cell`）也默认保留。
 - **没有 OCR**：纯扫描/图片型 PDF 没有可抽取的文本层，无法用本流水线翻译。
 - **preset 内没有手工修补通道**：没有 shell、写文件、编辑文件、读图与 subagent；只能通过 6 个工具完成流程，不能手写 PDF 或绕过校验。
-- **公式与特殊字符要改写**：译文中的数学符号必须改写为可渲染的 ASCII/希腊字母形式（例如 `x₂` 写 `x2`，`x²` 写 `x^2`，`⁻¹` 写 `^-1`）；PUA、U+FFFD 与 msyh 缺字符号会导致校验失败。
+- **公式与特殊字符要改写**：译文中的数学符号必须改写为可渲染的 ASCII/希腊字母形式（例如 `CO₂` 写 `CO2`，`⁻¹` 写 `^-1`）；PUA、U+FFFD 与 msyh 缺字符号会导致校验失败。
 - **长度与版面适配有限**：渲染器在原文 bbox 内自动缩字号来容纳译文；极长译文可能被压得很小，必要时用 `bbox_override` 借空白，但仍受页面与栏界约束。
 - **字体依赖**：渲染使用 Windows 字体 `C:/Windows/Fonts/msyh.ttc` 与 `msyhbd.ttc`；字体缺失时渲染/QC 会失败。
 - **profile 可调但未自动学习**：`profiles/*.json` 是文档占位；`pdf_profile_propose` 只给建议，不自动改参数。

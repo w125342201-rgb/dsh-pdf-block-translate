@@ -148,7 +148,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
 - **参考文献、作者/单位、页码默认保留**：`reference`、`authors`、`meta`、`page_number` 均为 `keep=true`；表格单元格（`table_cell`）也默认保留。
 - **没有 OCR**：纯扫描/图片型 PDF 没有文本层，不能处理。
 - **preset 内没有手工修补通道**：没有 shell、写文件、编辑文件、读图与 subagent；只能走 6 个工具，不能手写 PDF 或绕过校验。
-- **公式与特殊字符要改写**：译文中的数学符号需写成可渲染的 ASCII/希腊字母（如 `x₂` 写 `x2`，`x²` 写 `x^2`，`⁻¹` 写 `^-1`）；PUA、U+FFFD 与 msyh 缺字符号会导致校验失败。
+- **公式与特殊字符要改写**：译文中的数学符号需写成可渲染的 ASCII/希腊字母（如 `CO₂` 写 `CO2`，`⁻¹` 写 `^-1`）；PUA、U+FFFD 与 msyh 缺字符号会导致校验失败。
 - **版面适配有限**：渲染器在原文 bbox 内自动缩字号；极长译文可能被压得很小，必要时用 `bbox_override` 借用空白，但仍受页面与栏界限制。
 - **profile 是保守规则**：`auto` 只在 `single-col-word` 与 `two-col-latex` 之间二选一；`profiles/*.json` 目前只是文档占位，调整需要改脚本，`pdf_profile_propose` 不会自动修改。
 - **字体与 Python 依赖**：需要系统 Python + PyMuPDF，以及 Windows 字体 `msyh.ttc` / `msyhbd.ttc`；任一缺失都会让 prepare/finish 失败。

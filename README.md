@@ -1,4 +1,4 @@
-# dsh-pdf-blockwise — PDF 保版面翻译
+# dsh-pdf-block-translate — PDF 保版面翻译
 
 一个 DSH workspace bundle（MIT，v0.1.0）。安装后由 patch 插入一个 agent preset：
 
@@ -24,7 +24,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
    ├─ persona              固定“prepare → 填模板 → finish”流程
    ├─ tool-fs              read=true, readImage=false, write=false, edit=false, applyPatch=false
    ├─ tool-ask-user        ask_user_question
-   └─ pdf-tools            dsh-pdf-blockwise（本 bundle），config: python=python
+   └─ pdf-tools            dsh-pdf-block-translate（本 bundle），config: python=python
         └─ index.js 注册 6 个工具
              ├─ pdf_prepare        → python/prepare.py + python/common.py
              ├─ pdf_view           → 读 translations_template.json
@@ -80,7 +80,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
    target: <本仓库的绝对路径>
    ```
 
-2. 确认 bundle 已安装：`list_bundles` 中出现 `dsh-pdf-blockwise`。
+2. 确认 bundle 已安装：`list_bundles` 中出现 `dsh-pdf-block-translate`。
 3. 确认 preset 已激活：`list_plugins` 中 `preset-pdf-translate` 的 activation 为 `active`。若返回 `restart-required`，重启 DSH 后复查；若 `failed`，查看诊断并修 bundle 后重装。
 4. **新开一个会话**，在模式选择里选 **“PDF 保版面翻译”**。
 
@@ -125,7 +125,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
 
 ### 安装与模式
 
-1. `list_bundles` 有 `dsh-pdf-blockwise`，`list_plugins` 的 `preset-pdf-translate` 为 `active`。
+1. `list_bundles` 有 `dsh-pdf-block-translate`，`list_plugins` 的 `preset-pdf-translate` 为 `active`。
 2. Plugin Manager 的 bundle 详情显示标题“PDF 保版面翻译”、说明文字、原创图标与 `docs/DETAIL.md` 详情页。
 3. 新会话的模式选择器里出现“PDF 保版面翻译”；旧会话没有。
 4. 进入该模式后确认工具集：只有只读文件工具、`ask_user_question` 和 6 个 `pdf_*` 工具；没有 shell、写文件、编辑文件、读图工具。
@@ -158,7 +158,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
 ```text
 pdf-translate-bundle/
 ├─ .gitignore                   # 排除 __pycache__ / *.pyc
-├─ package.json                 # dsh-pdf-blockwise, bundle patch 入口
+├─ package.json                 # dsh-pdf-block-translate, bundle patch 入口
 ├─ cordis.patch.yml             # 插入 preset-pdf-translate（agent preset pdf-translate）
 ├─ index.js                     # 注册 6 个 pdf_* 工具
 ├─ icon.svg                     # Plugin Manager 图标（64×64）

@@ -1,6 +1,6 @@
 # PDF 保版面翻译 — 插件详情
 
-> 包名：`dsh-pdf-blockwise`｜Loader 行：`preset-pdf-translate`｜agent preset id：`pdf-translate`｜显示名：**PDF 保版面翻译**
+> 包名：`dsh-pdf-block-translate`｜Loader 行：`preset-pdf-translate`｜agent preset id：`pdf-translate`｜显示名：**PDF 保版面翻译**
 
 这是一个 DSH bundle：它的 patch 插入一个 agent preset，preset 里只挂载 persona、只读文件工具、`ask_user`，以及本 bundle 的 6 个 PDF 工具。它把“翻译 PDF”拆成确定性流水线——模型只负责逐块给中文译文，版面坐标由脚本负责，所以模型无法把排版搞坏。
 
@@ -23,7 +23,7 @@ preset-pdf-translate (Loader 行, @deepseek-ai/dsh-agent-preset)
    ├─ persona              固定“prepare → 填模板 → finish”流程与翻译要求
    ├─ tool-fs              read=true, readImage=false, write=false, edit=false, applyPatch=false
    ├─ tool-ask-user        ask_user_question
-   └─ pdf-tools            dsh-pdf-blockwise, config: python=python
+   └─ pdf-tools            dsh-pdf-block-translate, config: python=python
         └─ index.js 注册 6 个工具
              ├─ pdf_prepare        → python/prepare.py + python/common.py
              ├─ pdf_view           → 直接读 translations_template.json

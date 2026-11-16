@@ -21,7 +21,7 @@
   <本仓库的绝对路径>
 - 不要用 shell 手工 pnpm/npm 安装，也不要手改 profile 文件。
 - 安装后分别调用 list_bundles 和 list_plugins，报告：
-  1) dsh-pdf-blockwise 是否已安装、是否启用；
+  1) dsh-pdf-block-translate 是否已安装、是否启用；
   2) preset-pdf-translate 这一行的 activation 状态是否为 active；
   3) 如果出现 restart-required / failed / overridden，原样报告状态和诊断，不要声称安装成功。
 - 最后给出结论：preset-pdf-translate 是否 active（是/否）。
@@ -67,7 +67,7 @@
 按顺序检查：
 
 1. **是不是旧会话**：preset 在会话创建时确定；安装前已存在的会话不会出现新模式。**必须新开会话**。
-2. **bundle 是否装上**：`plugin_manager list_bundles` 应看到 `dsh-pdf-blockwise`，且状态为启用。
+2. **bundle 是否装上**：`plugin_manager list_bundles` 应看到 `dsh-pdf-block-translate`，且状态为启用。
 3. **preset 行是否 active**：`plugin_manager list_plugins` 找 `preset-pdf-translate`。若为 `restart-required`，重启 DSH 后再新开会话；若为 `failed`，看 2.2；若为 `overridden`，说明有更高优先级的 layer 覆盖了同名行，检查当前 profile 的 patch 是否也声明了 `preset-pdf-translate`。
 4. **是否装到了当前 profile**：在另一个 profile/工作区安装不会影响当前会话。
 5. **显示名**：会话模式名来自 preset 配置，固定为“PDF 保版面翻译”；Plugin Manager 的 bundle 标题才随 locale 变化（中文标题相同，英文为 “PDF layout-preserving translation”）。preset id 仍是 `pdf-translate`。
@@ -79,7 +79,7 @@
 `list_plugins` / Plugin Manager 会保留失败行和诊断。常见原因：
 
 - `cordis.patch.yml` 语法错误，或行 id 重复；本次 bundle 的 Loader 行 id 应为 `preset-pdf-translate`。
-- preset 的 `plugins` 里引用了不存在的包名或 package export；本 bundle 需要 `dsh-pdf-blockwise` 的 `.`、`./locale/*.json`、`./icon` 三个 export 都在。
+- preset 的 `plugins` 里引用了不存在的包名或 package export；本 bundle 需要 `dsh-pdf-block-translate` 的 `.`、`./locale/*.json`、`./icon` 三个 export 都在。
 - `package.json` 的 `files` / `exports` 与实际文件不一致；或 `icon.svg`、`locale/*.json`、`docs/DETAIL.md` 缺失、超出大小限制。
 - 本地目录安装是**链接**方式（profile 里记的是 `link:` 路径）：安装后移动或删除 `<本仓库的绝对路径>` 会让下次启动解析失败；确实要搬家，搬完在新位置重新 `install_bundle` 一次。
 - DSH 版本与 bundle 使用的 preset/patch 语法不兼容。
@@ -139,7 +139,7 @@ Test-Path C:\Windows\Fonts\msyhbd.ttc
 
 同时满足才算成功：
 
-1. `list_bundles` 有 `dsh-pdf-blockwise` 且启用；
+1. `list_bundles` 有 `dsh-pdf-block-translate` 且启用；
 2. `list_plugins` 的 `preset-pdf-translate` 为 `active`；
 3. 新会话模式选择里有“PDF 保版面翻译”；
 4. 该模式工具列表为：只读文件工具 + `ask_user_question` + 6 个 `pdf_*` 工具；

@@ -1,14 +1,14 @@
 {
-  "name": "dsh-pdf-blockwise",
+  "name": "dsh-pdf-block-translate",
   "version": "0.1.0",
   "description": "Layout-preserving PDF translation preset for DeepSeek Harness: replaces the original text in place, so figures, tables and page geometry stay where they were.",
   "type": "module",
   "license": "MIT",
   "author": "kun wang",
-  "homepage": "https://github.com/w125342201-rgb/dsh-pdf-blockwise#readme",
+  "homepage": "https://github.com/w125342201-rgb/dsh-pdf-block-translate#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/w125342201-rgb/dsh-pdf-blockwise.git"
+    "url": "git+https://github.com/w125342201-rgb/dsh-pdf-block-translate.git"
   },
   "keywords": [
     "dsh-plugin",

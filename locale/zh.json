@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "PDF 保版面翻译",
+    "description": "按原坐标原位替换 PDF 文字，译成中文后图表与版面位置不变。安装后新开会话，在模式选择里选“PDF 保版面翻译”，给出 PDF 路径即可：该模式只挂载 prepare、view、submit、finish、profile_propose 五个流水线工具与只读文件工具，没有 shell，也没有写文件工具。运行依赖系统 Python 与 PyMuPDF。含内联 MathType 公式的段落、展示公式、参考文献、作者/单位与页码默认保留原文；校验不通过时不会生成 PDF。",
+    "detail": "docs/DETAIL.md"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "default",
+  "title": "通用保守默认策略",
+  "type": "layout-profile-baseline",
+  "status": "documented-placeholder（v0 不是 pdf_prepare 的可选 profile；auto 最终只会落到 single-col-word 或 two-col-latex。本文件记录两者共享的默认策略，供以后新增 profile 时复制调整）",
+  "selectable_in_v0": false,
+  "summary": "未指定 profile 时的保守基线：逐页自动判栏，无法确认的版面一律倾向保留原文，不冒险渲染。",
+  "detect": {
+    "columns": "auto（逐页判断 single / two）",
+    "column_rule": "与 single-col-word、two-col-latex 共用同一套行宽 + 左右半区计数判据；auto 不会凭空创造第三种版式。",
+    "auto_selection": "双栏页数 ≥ max(2, floor(总页数 ÷ 4)) → two-col-latex，否则 single-col-word。",
+    "fallback": "版面异常（例如扫描件无文本层、页面尺寸混乱、图文混排严重）时，流水线没有专用兜底 profile；可能出现大量块被判 formula_mixed 或 equation 而保留原文。"
+  },
+  "colsplit": {
+    "value": "随 auto 结果继承：single-col-word 取 page_width + 5pt；two-col-latex 取 page_width × 0.5 + 8pt",
+    "source": "finish.py 按 plan.json 中的 profile 字段二选一，不存在名为 default 的运行时分支。",
+    "notes": "本文件若以后被代码读取，应显式决定默认分支，而不是假定存在 default 分支。"
+  },
+  "reference": {
+    "start_patterns": [
+      "行首为 [数字]",
+      "行首为 1. 或 1) 形式且含 19xx / 20xx 年份"
+    ],
+    "page_rule": "页级检测：单页 ≥3 条 → 整页参考文献；相邻页 ≥2 条 → 继续扩展；参考文献页除页码外全部保留。",
+    "default_keep": true,
+    "conservatism": "宁可整页保留，也不把参考文献逐条译成中文；这是 v0 的明确取舍。"
+  },
+  "formula": {
+    "display_equations": "保留原文。",
+    "inline_formula_mixed": "默认保留原文；仅在模型能忠实还原公式时才允许 override keep=false。",
+    "unknown_math": "无法确认可读性的数学内容按公式处理并保留，不做 OCR，不做公式重排。",
+    "glyph_guard": "PUA、U+FFFD、msyh 缺字符号均视为硬错误，拒绝渲染。"
+  },
+  "caption": {
+    "detect_pattern": "^(Figure|Fig\\.?|Table|图|表)\\s*\\d",
+    "kind_rule": "通过 clean-prose 检查才译；否则保守地归入 formula_mixed 并保留。",
+    "label_rule": "label 粗体前缀，长度上限 16 字符；建议“图 N | ”或“Figure N | ”。",
+    "size_check": "caption 不受 9pt 下限限制。"
+  },
+  "shared_keep_kinds": [
+    "page_number",
+    "reference",
+    "meta",
+    "authors",
+    "equation",
+    "table_cell",
+    "formula_mixed"
+  ],
+  "tuning_targets": [
+    "新增 profile 时复制本文件的字段，明确写清 detect、colsplit、reference、formula、caption 五组规则。",
+    "任何调参都应在真实 PDF 上跑 pdf_finish，并保留 run_record.json 与 QC 输出作为依据。",
+    "profile 建议目前由 pdf_profile_propose 以 run_record.json 为输入给出，属于咨询性质，不自动修改本文件。"
+  ]
+}

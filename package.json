@@ -1,0 +1,46 @@
+{
+  "name": "dsh-pdf-blockwise",
+  "version": "0.1.0",
+  "description": "Layout-preserving PDF translation preset for DeepSeek Harness: replaces the original text in place, so figures, tables and page geometry stay where they were.",
+  "type": "module",
+  "license": "MIT",
+  "author": "kun wang",
+  "homepage": "https://github.com/w125342201-rgb/dsh-pdf-blockwise#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w125342201-rgb/dsh-pdf-blockwise.git"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "pdf",
+    "translation",
+    "chinese",
+    "layout-preserving",
+    "pymupdf"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-0"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "docs",
+    "python",
+    "profiles",
+    "README.md",
+    "INSTALL.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

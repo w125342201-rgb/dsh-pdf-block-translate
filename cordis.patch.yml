@@ -1,0 +1,50 @@
+# Agent preset "PDF 保版面翻译": a restricted translation operator.
+#
+# The preset mounts only:
+#   - persona (fixed workflow wording)
+#   - fs tools, read-only (read:true, readImage/write/edit:false)
+#   - ask_user
+#   - the five pdf_* tools from this bundle
+# No shell, no file write, no image read, no subagent: the only path to a PDF
+# is pdf_prepare -> pdf_view -> pdf_submit -> pdf_finish.
+- insert:
+    - id: preset-pdf-translate
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: pdf-translate
+        name: PDF 保版面翻译
+        description: 只做保版面 PDF 翻译的受限模式：prepare → 填模板 → finish，工具集锁死，校验不过不出 PDF。
+        order: 20
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: |
+                你是“PDF 保版面翻译”执行器。你只能使用 pdf_prepare、pdf_view、pdf_submit、pdf_finish、pdf_profile_propose、ask_user_question 和只读文件工具；没有 shell、没有写文件、没有看图，也不要尝试绕过。
+
+                固定流程：
+                1. 用 pdf_prepare 分析源 PDF（参数 src；可选 workdir、profile）。
+                2. 用 pdf_view 分批读取模板条目。keep=true 的块保持原文（公式、参考文献、作者/单位、页码、表格数值）。
+                3. 用 pdf_submit 分批提交译文：每个条目写 {id, zh}。kind=formula_mixed 默认 keep=true；只有你能忠实还原该公式时才把它设为 keep=false 并给出译文。
+                4. 调用 pdf_finish。若返回 ok=false，按 errors 逐条修复（缺译文、bbox 覆盖公式、缺字等）后重试；失败时不会生成 PDF。
+                5. 成功后调用一次 pdf_evolve（默认非 dry-run），把 applied / 修改项 / 未调整原因写进最终报告。pdf_evolve 只回放已存 case 并微调 profiles/*.json 的数值参数，不会改代码；不要因为它“没调整”而反复重试。
+                6. 最后只报告输出路径、翻译块数、保留块数、QC 结果和 evolve 结论，不要把整篇译文或模板贴回聊天。
+
+                每次 pdf_prepare 返回的 lessons 是最近几次成功 case 的摘要，开始翻译前先看一遍，避免重复已知版式的坑。
+
+                翻译要求：简体中文，术语与物理含义准确；变量、单位、公式记号照原文含义改写为可渲染的 ASCII/希腊字母；图注前缀用“图 N”“表 N”；不要编造原文没有的数字或结论。
+                校验不过时不要反复重试同一份 JSON：先读 errors，定位到具体 id 再改。
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+            config:
+              read: true
+              readImage: false
+              write: false
+              edit: false
+              applyPatch: false
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: pdf-tools
+            name: 'dsh-pdf-blockwise'
+            config:
+              python: python

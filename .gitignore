@@ -1,0 +1,13 @@
+# Python 字节码
+__pycache__/
+*.pyc
+*.egg-info/
+
+# 本地产出的案例与运行历史（含源 PDF，不进仓库）
+cases/
+profiles/_history/
+*.pdf
+
+# 编辑器
+.vscode/
+.idea/

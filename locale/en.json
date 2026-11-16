@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "PDF layout-preserving translation",
+    "description": "Translates a PDF into Chinese in place: each text block is replaced at its original coordinates, so figures, tables and page layout stay put. Open a new session, choose the “PDF 保版面翻译” mode, and give a PDF path; the preset mounts only five pipeline tools (prepare, view, submit, finish, profile_propose) plus a read-only file browser, with no shell or file-write tool. Requires system Python with PyMuPDF. Paragraphs with inline MathType formulas, display equations, references, authors/affiliations and page numbers stay in the original language by default; when validation fails, no PDF is written.",
+    "detail": "docs/DETAIL.md"
+  }
+}

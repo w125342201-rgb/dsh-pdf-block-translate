@@ -1,0 +1,64 @@
+{
+  "id": "two-col-latex",
+  "title": "双栏 LaTeX / arXiv 型",
+  "type": "layout-profile",
+  "status": "documented-placeholder（v0 由 common.py / finish.py 实现；本文件用于后续调参与说明，当前运行时不读取）",
+  "selectable_in_v0": true,
+  "chosen_by_auto_when": "全文判为双栏的页数 ≥ max(2, floor(总页数 ÷ 4))；逐页仍独立判断单/双栏。",
+  "summary": "面向双栏排版的 LaTeX / arXiv / PRL 类论文：左右栏并行、跨栏标题与图注、展示公式与编号公式多。",
+  "detect": {
+    "columns": "two",
+    "column_rule": "逐页按文本行 bbox：行宽 >55% 页宽记为通栏行（标题、摘要、通栏图注）；否则按行中心 x 分入左右半区。左、右各 ≥8 行且通栏行少于左右合计的 50%，该页判 two-column。",
+    "page_scope": "逐页独立判断；首页标题/摘要区常被判为通栏行，不阻止该页其余部分判双栏。",
+    "auto_selection": "全文双栏页数 ≥ max(2, floor(总页数 ÷ 4)) 时选本 profile；否则选 single-col-word。"
+  },
+  "colsplit": {
+    "value": "page_width × 0.5 + 8pt",
+    "source": "finish.py：profile 非 single-col-word 时，传给 pdf_qc.py 的 --colsplit 取首页宽度的一半再加 8pt。",
+    "purpose": "估计右栏起点，用于 QC 的越栏判定与同栏叠行分组。",
+    "notes": [
+      "真实右栏起点通常略大于栏缝中点；若 QC 只报零星几行越栏，优先怀疑 colsplit 偏移，而不是 bbox 写错。",
+      "后续调参方向：把 colsplit 改为“右栏正文实际 x0”，可仿照 pdf-layout-translate 技能的实测做法。",
+      "宽度取自首页；横版页或异构首页属于未覆盖情形。"
+    ]
+  },
+  "reference": {
+    "start_patterns": [
+      "行首为 [数字]（例如 [12] ...）",
+      "行首为 1. 或 1) 形式，且该段包含 19xx / 20xx 年份"
+    ],
+    "page_rule": "单页 ≥3 个 reference 段 → 整页标为参考文献页；相邻页 ≥2 个则继续扩展；参考文献页除页码外的全部段落按 reference 保留。",
+    "default_keep": true,
+    "column_caveat": "双栏文的参考文献常从某栏中部开始；v0 按页级传播，可能把同页另一栏仍可译的正文一并保留。这是保守取舍，不是逐栏精确识别。"
+  },
+  "formula": {
+    "display_equations": "kind=equation 的展示公式默认 keep=true；编号公式如 (12)、(3a) 也按展示公式处理。",
+    "inline_formula_mixed": "kind=formula_mixed 的含公式段落默认 keep=true；模型只有在能忠实还原其中公式时才可 override keep=false 并给出译文。",
+    "equation_region_rule": "公式字符占比 ≥30%、宽 ≤82% 页宽、长度 ≤260 字符的文本块作为展示公式候选并合并；段落与区域重叠 >20% 判 equation。双栏窄栏中该规则更容易命中，属于有意保守。",
+    "clean_prose_rule": "可直译段落需同时满足：长度 ≥40 字符、公式字符占比 ≤18%、短公式碎片少于 4 个、英文单词至少 6 个；否则降级为 formula_mixed。",
+    "glyph_guard": "译文禁止 PUA、U+FFFD 与 msyh 缺字符号；希腊字母、上下标与数学 Unicode 必须改写为可渲染的 ASCII/希腊字母形式。",
+    "length_ratio_guard": "zh 与 en 的字符长度比须在 0.08–0.90 之间；越界按错误处理。"
+  },
+  "caption": {
+    "detect_pattern": "^(Figure|Fig\\.?|Table|图|表)\\s*\\d",
+    "kind_rule": "图注样式段落若通过 clean-prose 检查 → caption（可译）；否则 → formula_mixed（保留原文）。",
+    "label_rule": "label 用粗体单独绘制在图注首行，建议写成“Figure 1 | ”或“图 1 | ”；label 长度上限 16 字符。原标题词并入 zh。",
+    "cross_column": "跨栏图注通常被提取为通栏段落；若图注被行内公式切成多块，v0 没有专门的图注区域合并开关，目前只能逐块处理或保留原文，属于后续调参点。",
+    "size_check": "caption 不受 9pt 最小字号校验限制；其他 kind 低于 9pt 会报错。"
+  },
+  "keep_kinds": [
+    "page_number",
+    "reference",
+    "meta",
+    "authors",
+    "equation",
+    "table_cell",
+    "formula_mixed"
+  ],
+  "tuning_targets": [
+    "若 QC 报零星越栏，先把 colsplit 调到右栏实际起点，再考虑改 bbox。",
+    "若参考文献只覆盖右栏却把左栏正文也保留，后续可考虑按栏起点（带 x 区间）细化 reference 传播。",
+    "若图注被公式切碎，v0 没有图注区域合并开关；暂时保留原文，后续再考虑专门的图注区域参数。",
+    "若公式块保留过多，检查 equation_region 的 30% / 82% / 260 字符阈值。"
+  ]
+}
